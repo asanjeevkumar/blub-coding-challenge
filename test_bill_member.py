@@ -121,7 +121,7 @@ def test_calculate_bill_for_month(
 
 
 @pytest.mark.parametrize('bill_date, member_id, account_id, expected_error', [
-  ('2017-3-30', 'member-123', 'account-abc', TypeError),
+  ('2017-3-30', 'member-123', 'account-abc', ValueError),
   ('2017-3-30', 'member-123-invalid-member', 'account-abc', KeyError),
   ('2017-3-30', 'member-123', 'invalid-account-abc', KeyError),
 ])

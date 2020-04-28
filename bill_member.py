@@ -32,11 +32,11 @@ def calculate_usage(account_data, bill_date, energy_type):
     :return: energy usage for `bill_date`
     :rtype: int
     :raises TypeError: if the user has no previous readings
-    :raises V
+    :raises ValueError: on no Previous reading of current month.
     """
     # assuming there will one item in the list for account data
     meter_data = account_data[0][energy_type]
-    previous_month_reading = {}
+    previous_month_reading = None
     usage_per_day = None
 
     bill_datetime = datetime.strptime(bill_date, '%Y-%m-%d')
@@ -45,6 +45,7 @@ def calculate_usage(account_data, bill_date, energy_type):
     # Finding nearest previous two meter reading for estimation
     for reading in meter_data:
         reading_datetime = reading['readingDate']
+        # Sometimes json might return datetime object
         if isinstance(reading_datetime, str):
             reading_datetime = \
                 datetime.strptime(
@@ -61,6 +62,8 @@ def calculate_usage(account_data, bill_date, energy_type):
             # from assumption and linear list previous_month_reading
             # already loaded
             # pylint disable=unsubscriptable-object
+            if previous_month_reading is None:
+                raise ValueError("No previous reading")
             units_used = \
                 reading['cumulative'] - previous_month_reading['cumulative']
             reading_window_days = \
